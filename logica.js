@@ -7,12 +7,25 @@ let verde = document.getElementById("verde");
 class Juego {
   constructor() {
     this.iniciar();
+    this.generarSecuencia();
   }
   iniciar() {
     btnInicio.classList.add("hide");
+    this.nivel = 1;
+    this.colores = {
+      celeste,
+      violeta,
+      naranja,
+      verde,
+    };
+  }
+  generarSecuencia() {
+    this.secuencia = new Array(10)
+      .fill(0)
+      .map((n) => Math.floor(Math.random() * 4));
   }
 }
 
 function empezarJuego() {
-  var juego = new Juego();
+  window.juego = new Juego();
 }
