@@ -3,14 +3,17 @@ let celeste = document.getElementById("celeste");
 let violeta = document.getElementById("violeta");
 let naranja = document.getElementById("naranja");
 let verde = document.getElementById("verde");
+const MAX_LEVEL = 10;
 
 class Juego {
   constructor() {
     this.iniciar();
     this.generarSecuencia();
-    this.iluminarSecuencia();
-    this.agregarClick();
+    setTimeout(() => {
+      this.siguienteNivel();
+    }, 500);
   }
+
   iniciar() {
     this.elegirColor = this.elegirColor.bind(this);
     btnInicio.classList.add("hide");
@@ -22,8 +25,13 @@ class Juego {
       verde,
     };
   }
+  siguienteNivel() {
+    this.subnivel = 0;
+    this.iluminarSecuencia();
+    this.agregarClick();
+  }
   generarSecuencia() {
-    this.secuencia = new Array(10)
+    this.secuencia = new Array(MAX_LEVEL)
       .fill(0)
       .map((n) => Math.floor(Math.random() * 4));
   }
@@ -78,7 +86,25 @@ class Juego {
   elegirColor(ev) {
     const nombreColor = ev.target.dataset.color;
     const numeroColor = this.colorANum(nombreColor);
-    console.log(this.secuencia);
+    this.iluminarColor(nombreColor);
+    if (numeroColor === this.secuencia[this.subnivel]) {
+      this.subnivel++;
+      if (this.subnivel === this.nivel) {
+        this.nivel++;
+
+        if (this.nivel === MAX_LEVEL + 1) {
+          //gano
+        } else {
+          //setTimeout cambia el valor de this a window
+          //podemos anclar this con bind
+          setTimeout(this.siguienteNivel.bind(this), 2000);
+          //como buena practica definirlo en el inicio
+        }
+      }
+    } else {
+      //perdio
+      console.log("perdio");
+    }
   }
 }
 
