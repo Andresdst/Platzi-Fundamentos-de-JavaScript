@@ -7,6 +7,7 @@ const MAX_LEVEL = 10;
 
 class Juego {
   constructor() {
+    this.iniciar = this.iniciar.bind(this);
     this.iniciar();
     this.generarSecuencia();
     setTimeout(() => {
@@ -16,7 +17,11 @@ class Juego {
 
   iniciar() {
     this.elegirColor = this.elegirColor.bind(this);
-    btnInicio.classList.add("hide");
+    if (btnInicio.classList.contains("hide")) {
+      btnInicio.classList.remove("hide");
+    } else {
+      btnInicio.classList.add("hide");
+    }
     this.nivel = 1;
     this.colores = {
       celeste: celeste,
@@ -83,6 +88,12 @@ class Juego {
     this.colores.verde.addEventListener("click", this.elegirColor);
     this.colores.violeta.addEventListener("click", this.elegirColor);
   }
+  removerClick() {
+    this.colores.celeste.removeEventListener("click", this.elegirColor);
+    this.colores.naranja.removeEventListener("click", this.elegirColor);
+    this.colores.verde.removeEventListener("click", this.elegirColor);
+    this.colores.violeta.removeEventListener("click", this.elegirColor);
+  }
   elegirColor(ev) {
     const nombreColor = ev.target.dataset.color;
     const numeroColor = this.colorANum(nombreColor);
@@ -91,9 +102,10 @@ class Juego {
       this.subnivel++;
       if (this.subnivel === this.nivel) {
         this.nivel++;
-
+        this.removerClick();
         if (this.nivel === MAX_LEVEL + 1) {
-          //gano
+          swal("Ganaste", `has superado el nivel ${MAX_LEVEL}!`, "success") //retorna promesa
+            .then(() => this.iniciar());
         } else {
           //setTimeout cambia el valor de this a window
           //podemos anclar this con bind
@@ -102,7 +114,11 @@ class Juego {
         }
       }
     } else {
-      //perdio
+      swal("Perdiste", "Secuencia incorrecta!", "error").then(() => {
+        this.removerClick();
+        this.iniciar();
+      });
+
       console.log("perdio");
     }
   }
